@@ -1,0 +1,4 @@
+# Some files that should be ignored by git:
+
+venv/
+.idea/
