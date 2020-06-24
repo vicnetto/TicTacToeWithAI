@@ -1,4 +1,7 @@
-def basic_game(row_pos: int, column_pos: int) -> None:
+import global_variables as gv
+
+
+def basic_mode() -> None:
     """ Initial game function
 
     This function basically runs calls all the functions. In the start, it
@@ -6,10 +9,6 @@ def basic_game(row_pos: int, column_pos: int) -> None:
     wanted position and verifies if is a valid one, inserting the play and
     possibly ending the game.
 
-    :param row_pos: Is the constant that defines the place of the row in
-    the input string.
-    :param column_pos: Is the constant that defines the place of the
-    column in the input string.
     :return: None
     """
 
@@ -20,15 +19,10 @@ def basic_game(row_pos: int, column_pos: int) -> None:
     print_board(m_cells)
 
     while True:
-        print("Enter the coordinates: > ", end="")
-        position = str(input())
-
-        row = position[row_pos]
-        column = position[column_pos]
-        value = do_verifications(m_cells, position, row, column)  # Passing the input.
+        value = catch_movement(m_cells)
 
         if value:
-            return
+            break
 
 
 def print_board(m_cells: list) -> None:
@@ -54,6 +48,27 @@ def print_board(m_cells: list) -> None:
     print("---------")
 
 
+def catch_movement(m_cells: list) -> bool:
+    """ Catch the next player move
+
+        This function is the first caller of all the insert position functions.
+        Right on the start, it gets the input, redirecting the new position to
+        all the other functions.
+
+    :param m_cells: The actual board, with all actual moves.
+    :return: True if the game has ended or False if the input is
+    wrong or the game is still running.
+    """
+
+    print("Enter the coordinates: > ", end="")
+    position = str(input())
+
+    row = position[gv.ROW]
+    column = position[gv.COLUMN]
+
+    return do_verifications(m_cells, position, row, column)  # Passing the input.
+
+
 def do_verifications(m_cells: list, position: str, row: str, column: str) -> bool:
     """ Make all game verifications
 
@@ -69,6 +84,7 @@ def do_verifications(m_cells: list, position: str, row: str, column: str) -> boo
     :return: True if the game has ended, or False if the input is
     wrong or the game is still running.
     """
+
     end_game = False
 
     # Making the verification if the number is a real number, and the input is correct.
@@ -121,7 +137,7 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
     :param m_cells: The actual board, with all actual moves.
     :param row: Is the row position for the inserted value.
     :param column: Is the column position for the inserted value.
-    :param next_player: Is the return of the who_is_next_player(...) function.
+    :param next_player: Is the return of the who_is_next(...) function.
     :return: True if the game has ended, and False if the game is still
     happening.
     """
@@ -156,7 +172,7 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
             print("Draw")
             return True
         elif element == 0:
-            print("Game not finished")
+            # print("Game not finished")
             break
 
         hor, ver, diag = 0, 0, 0
