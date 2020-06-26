@@ -1,7 +1,8 @@
 import global_variables as gv
+from easy import easy_choice
 
 
-def basic_mode() -> None:
+def basic_mode(player_one: int, player_two: int) -> None:
     """ Initial game function
 
     This function basically runs calls all the functions. In the start, it
@@ -12,14 +13,19 @@ def basic_mode() -> None:
     :return: None
     """
 
-    cells = str(input("Enter cells: > "))
-    m_cells = ([[cells[index] for index in range(limit * 3, (limit * 3) + 3)]
-                for limit in range(0, 3)])  # Transform the string in a matrix.
+    m_cells = [["_" for __ in range(3)] for _ in range(3)]
 
     print_board(m_cells)
 
     while True:
-        value = catch_movement(m_cells)
+        next_player = who_is_next(m_cells)
+
+        if next_player:
+            position = catch_movement(m_cells) if player_one == gv.PLAYER else easy_choice(m_cells, next_player)
+        else:
+            position = catch_movement(m_cells) if player_two == gv.PLAYER else easy_choice(m_cells, next_player)
+
+        value = do_verifications(m_cells, position)  # Passing the input.
 
         if value:
             break
@@ -48,7 +54,7 @@ def print_board(m_cells: list) -> None:
     print("---------")
 
 
-def catch_movement(m_cells: list) -> bool:
+def catch_movement(m_cells: list) -> str:
     """ Catch the next player move
 
         This function is the first caller of all the insert position functions.
@@ -63,13 +69,10 @@ def catch_movement(m_cells: list) -> bool:
     print("Enter the coordinates: > ", end="")
     position = str(input())
 
-    row = position[gv.ROW]
-    column = position[gv.COLUMN]
-
-    return do_verifications(m_cells, position, row, column)  # Passing the input.
+    return position
 
 
-def do_verifications(m_cells: list, position: str, row: str, column: str) -> bool:
+def do_verifications(m_cells: list, position: str) -> bool:
     """ Make all game verifications
 
     This functions is important for all game verifications on insertion,
@@ -84,12 +87,11 @@ def do_verifications(m_cells: list, position: str, row: str, column: str) -> boo
     :return: True if the game has ended, or False if the input is
     wrong or the game is still running.
     """
-
     end_game = False
 
     # Making the verification if the number is a real number, and the input is correct.
-    if column.isnumeric() and position[1] == ' ' and row.isnumeric() and len(position) == 3:
-        row, column = 2 - (int(row) - 1), int(column) - 1  # Correcting to the real matrix
+    if len(position) == 3 and position[gv.COLUMN].isnumeric() and position[1] == ' ' and position[gv.ROW].isnumeric():
+        row, column = 2 - (int(position[gv.ROW]) - 1), int(position[gv.COLUMN]) - 1  # Correcting to the real matrix
 
         # Seeing if this value is valid.
         if 0 <= row <= 2 and 0 <= column <= 2:
@@ -130,10 +132,8 @@ def who_is_next(m_cells: list) -> bool:
 
 def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
     """ Make the real play
-
     This function basically makes all the play and see if a player won
     or lost.
-
     :param m_cells: The actual board, with all actual moves.
     :param row: Is the row position for the inserted value.
     :param column: Is the column position for the inserted value.
@@ -155,7 +155,7 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
                 break
             if actual == m_cells[element][numb]:
                 hor += 1
-            if actual == m_cells[numb][element]:
+            if actual == m_cells[numb][2 - element]:
                 ver += 1
 
         if m_cells[1][1] != "_":
@@ -168,7 +168,7 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
             print(f"{actual} wins")
             return True
         elif len([True for lis in m_cells for char in lis if
-                  char == '_']) == 0:  # If has no empty spaces on the board, the game is over.
+                  char == '_']) == 0 and element == 0:  # If has no empty spaces on the board, the game is over.
             print("Draw")
             return True
         elif element == 0:
@@ -178,3 +178,4 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
         hor, ver, diag = 0, 0, 0
 
     return False
+

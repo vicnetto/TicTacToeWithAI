@@ -15,8 +15,8 @@ COLUMN = 0
 #    this number have the position of the second input number on
 #    the string.
 
-BASIC = 0
-# BASIC -> type: int
+PLAYER = 0
+# PLAYER -> type: int
 #    Now we have some variables that define the level/mode of the
 #    game. The first one is "BASIC". This mode is made to play
 #    with friends, that is why it is not possible to find any kind
