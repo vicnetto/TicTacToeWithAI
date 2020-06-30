@@ -28,6 +28,9 @@ EASY = 1
 #    moves to the board.
 
 MEDIUM = 2
-
-EXPERT = 3
-
+# MEDIUM -> type: int
+#    The second "AI" searches for real good moves. First of all, it looks
+#    for a movement that will bring the victory. Second, if there wasn't
+#    movements to win the game, it searches for blocks on the opponent.
+#    Third, if there is no of those options, it just insert an random
+#    position.

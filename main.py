@@ -1,5 +1,4 @@
-from operational import basic_mode, print_board
-from ai import medium_choice
+from operational import basic_mode
 import global_variables as gv
 
 
