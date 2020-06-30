@@ -15,21 +15,19 @@ COLUMN = 0
 #    this number have the position of the second input number on
 #    the string.
 
-PLAYER = 0
-# PLAYER -> type: int
-#    Now we have some variables that define the level/mode of the
-#    game. The first one is "BASIC". This mode is made to play
-#    with friends, that is why it is not possible to find any kind
-#    of IA in this mode.
+USER = 0
+# USER -> type: int
+#    Now we have some variables which define the player type. The first
+#    one is "USER". User type is a real player, which can insert positions
+#    with the catch function.
 
 EASY = 1
 # EASY -> type: int
-#    In this mode, starts the basic IA. Of course this is not even
+#    This is the basic "IA" player. Of course this is not even
 #    considered an IA. This mode is just the computer making random
-#    moves to the board, in other words the "IA" actually doesn't
-#    know what she is doing.
+#    moves to the board.
 
-NORMAL = 2
+MEDIUM = 2
 
 EXPERT = 3
 

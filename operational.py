@@ -1,5 +1,5 @@
 import global_variables as gv
-from easy import easy_choice
+from ai import easy_choice, medium_choice
 
 
 def basic_mode(player_one: int, player_two: int) -> None:
@@ -10,22 +10,28 @@ def basic_mode(player_one: int, player_two: int) -> None:
     wanted position and verifies if is a valid one, inserting the play and
     possibly ending the game.
 
+    :param player_one: This parameter is the type of the "X" player, if is
+    a player it contains gv.PLAYER, if is an easy bot it contains gv.EASY.
+    :param player_two: This one is the same of "player_one", but is the "O"
+    player, or second player.
     :return: None
     """
 
-    m_cells = [["_" for __ in range(3)] for _ in range(3)]
+    m_cells = [["_" for __ in range(3)] for _ in range(3)]  # Making the default list.
 
     print_board(m_cells)
 
     while True:
         next_player = who_is_next(m_cells)
 
-        if next_player:
-            position = catch_movement(m_cells) if player_one == gv.PLAYER else easy_choice(m_cells, next_player)
+        if next_player:  # Making a big verification what is the type of the player, to call the right function.
+            position = (catch_movement() if player_one == gv.USER else easy_choice(m_cells) if player_one == gv.EASY
+                        else medium_choice(m_cells, who_is_next(m_cells)))
         else:
-            position = catch_movement(m_cells) if player_two == gv.PLAYER else easy_choice(m_cells, next_player)
+            position = (catch_movement() if player_two == gv.USER else easy_choice(m_cells) if player_two == gv.EASY
+                        else medium_choice(m_cells, who_is_next(m_cells)))
 
-        value = do_verifications(m_cells, position)  # Passing the input.
+        value = do_verifications(m_cells, position)  # If this value returns true, it is time to end the game.
 
         if value:
             break
@@ -54,16 +60,14 @@ def print_board(m_cells: list) -> None:
     print("---------")
 
 
-def catch_movement(m_cells: list) -> str:
+def catch_movement() -> str:
     """ Catch the next player move
 
-        This function is the first caller of all the insert position functions.
-        Right on the start, it gets the input, redirecting the new position to
-        all the other functions.
+    This function is only for organization. This basically gets the user
+    input, transforming it to a string and returning what is the move, for
+    the program do some verifications with the position.
 
-    :param m_cells: The actual board, with all actual moves.
-    :return: True if the game has ended or False if the input is
-    wrong or the game is still running.
+    :return: It return the string with the user movement.
     """
 
     print("Enter the coordinates: > ", end="")
@@ -81,9 +85,7 @@ def do_verifications(m_cells: list, position: str) -> bool:
     return True and if isn't will result False.
 
     :param m_cells: The actual board, with all actual moves.
-    :param position: Is the initial board, but in string mode.
-    :param row: Is the row position for the inserted value.
-    :param column: Is the column position for the inserted value.
+    :param position: Is the current move.
     :return: True if the game has ended, or False if the input is
     wrong or the game is still running.
     """
@@ -97,6 +99,8 @@ def do_verifications(m_cells: list, position: str) -> bool:
         if 0 <= row <= 2 and 0 <= column <= 2:
             # Lastly, returning if the space is empty or occupied.
             if m_cells[row][column] == '_':
+                m_cells[row][column] = "X" if who_is_next(m_cells) else "O"
+                print_board(m_cells)
                 end_game = next_play(m_cells, row, column, who_is_next(m_cells))
             else:
                 print("This cell is occupied! Choose another one!")
@@ -132,8 +136,10 @@ def who_is_next(m_cells: list) -> bool:
 
 def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
     """ Make the real play
+
     This function basically makes all the play and see if a player won
     or lost.
+
     :param m_cells: The actual board, with all actual moves.
     :param row: Is the row position for the inserted value.
     :param column: Is the column position for the inserted value.
@@ -143,12 +149,12 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
     """
 
     # Setting the new position on the board.
-    m_cells[row][column] = "X" if next_player else "O"
-    print_board(m_cells)
-    hor, ver, diag = 0, 0, 0
+    diag_sec, diag_prin = 0, 0
 
     for element in range(2, -1, -1):
         actual = m_cells[element][2 - element]
+        actual_diag = m_cells[1][1] if m_cells[1][1] != "_" else "@"  # Symbolic value, just to differ.
+        hor, ver = 0, 0
 
         for numb in range(0, 3):
             if actual == '_':  # Verify if has an empty space on the line, automatically ignoring this line.
@@ -158,24 +164,21 @@ def next_play(m_cells: list, row: int, column: int, next_player: bool) -> bool:
             if actual == m_cells[numb][2 - element]:
                 ver += 1
 
-        if m_cells[1][1] != "_":
-            # Checking the two diagonals
-            if m_cells[2][0] == m_cells[1][1] == m_cells[0][2] or m_cells[0][0] == m_cells[1][1] == m_cells[2][2]:
-                actual = m_cells[1][1]
-                diag += 3
+        # Checking the two diagonals
+        if actual_diag == m_cells[element][element]:
+            diag_sec += 1
+        if actual_diag == m_cells[element][2 - element]:
+            diag_prin += 1
 
-        if hor == 3 or ver == 3 or diag == 3:
-            print(f"{actual} wins")
+        actual = actual if diag_prin != 3 != diag_sec else actual_diag  # Printing the right character.
+        if hor == 3 or ver == 3 or diag_prin == 3 or diag_sec == 3:
+            print(f"{actual} wins\n")
             return True
-        elif len([True for lis in m_cells for char in lis if
-                  char == '_']) == 0 and element == 0:  # If has no empty spaces on the board, the game is over.
-            print("Draw")
-            return True
-        elif element == 0:
-            # print("Game not finished")
-            break
 
-        hor, ver, diag = 0, 0, 0
+        # If has no empty spaces on the board, the game is over.
+        elif len([True for lis in m_cells for char in lis if char == '_']) == 0 and element == 0:
+            print("Draw\n")
+            return True
 
     return False
 
