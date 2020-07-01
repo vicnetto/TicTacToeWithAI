@@ -1,3 +1,4 @@
+from ai import hard_choice
 from operational import basic_mode
 import global_variables as gv
 
@@ -8,8 +9,10 @@ def input_command() -> None:
 
         if len(input_style) == 3 and input_style[0] == "start":
             p1, p2 = input_style[1], input_style[2]
-            player1 = gv.USER if p1 == "user" else gv.EASY if p1 == "easy" else gv.MEDIUM if p1 == "medium" else -1
-            player2 = gv.USER if p2 == "user" else gv.EASY if p2 == "easy" else gv.MEDIUM if p2 == "medium" else -1
+            player1 = (gv.USER if p1 == "user" else gv.EASY if p1 == "easy" else gv.MEDIUM if p1 == "medium" else
+                       "hard" if p1 == "hard" else -1)
+            player2 = (gv.USER if p2 == "user" else gv.EASY if p2 == "easy" else gv.MEDIUM if p2 == "medium" else
+                       "hard" if p2 == "hard" else -1)
 
             if player1 != -1 != player2:
                 basic_mode(player1, player2)
@@ -24,3 +27,6 @@ def input_command() -> None:
 
 if __name__ == "__main__":
     input_command()
+
+    # board = [["_", "_", "_"], ["_", "_", "_"], ["_", "_", "_"]]
+

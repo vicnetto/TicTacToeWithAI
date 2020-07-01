@@ -1,6 +1,10 @@
 # A list of all global variables used in the project, to make the variables
 # more usable again.
 
+END = 2
+DRAW = 1
+KEEP = 0
+
 ROW = 2
 # ROW -> type: int
 #    The purpose of this global variable is to define where is
