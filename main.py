@@ -1,4 +1,3 @@
-from ai import hard_choice
 from operational import basic_mode
 import global_variables as gv
 
@@ -27,6 +26,3 @@ def input_command() -> None:
 
 if __name__ == "__main__":
     input_command()
-
-    # board = [["_", "_", "_"], ["_", "_", "_"], ["_", "_", "_"]]
-

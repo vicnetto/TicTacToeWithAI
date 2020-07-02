@@ -1,5 +1,5 @@
 import global_variables as gv
-from ai import easy_choice, medium_choice, next_play, print_board, hard_choice
+from ai import easy_choice, medium_choice, next_play, hard_choice
 
 
 def basic_mode(player_one: int, player_two: int) -> None:
@@ -54,6 +54,29 @@ def catch_movement() -> str:
     position = str(input())
 
     return position
+
+
+def print_board(m_cells: list) -> None:
+    """ Print the game board
+
+    This function is used to print the board.
+
+    :param m_cells: The actual board, with all actual moves
+    :return: None
+    """
+
+    print("---------")
+
+    for element in range(0, 3):
+        print("|", end="")
+        for numb in range(0, 3):
+            if m_cells[element][numb] == "_":
+                print("  ", end="")
+            else:
+                print(" " + m_cells[element][numb], end="")
+        print(" |")
+
+    print("---------")
 
 
 def do_verifications(m_cells: list, position: str) -> bool:

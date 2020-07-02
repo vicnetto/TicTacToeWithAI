@@ -10,7 +10,8 @@ def easy_choice(m_cells: list, is_medium=False) -> str:
         only an random play.
 
 
-    :param is_medium:
+    :param is_medium: This keyword argument is only changed when called
+    by medium_choice function, only to don't print the easy phrase.
     :param m_cells: The actual board, with all actual moves.
     :return: Returns a string with a random move.
     """
@@ -83,18 +84,36 @@ def medium_choice(m_cells: list, next_player: bool) -> str:
 
 
 def hard_choice(m_cells: list, player: bool) -> str:
+    """ Treat hard recursion
+
+        This function is just to treat the hard_recursion() return, and return
+        a string to make the move on the board.
+
+    :param m_cells: The actual board, with all actual moves.
+    :param player: What is the next player to make a move, "X" or "O".
+    :return: The best move of the game, calculated by the minimax
+    function (hard_recursion()).
+    """
+
     print('Making move level "hard"')
 
     player = "X" if player else "O"
     position = ""
+    # If it the first move of the board there is no need to calculate that.
+    empty_cells = [True for lis in m_cells for elem in lis if elem == "_"]
+    if len(empty_cells) == 9:
+        return "1 3"
+    # If isn't the first move, calls the minimax.
     real_list = hard_recursion(m_cells, player, player)
     index = 0
 
+    # What is the index of the returned number.
     for numb, elements in enumerate(real_list):
         if max(real_list) == elements:
             index = numb
             break
 
+    # Searching in all board free spaces where is the exactly index.
     new_index = 0
     for i, lis in enumerate(m_cells):
         for j, char in enumerate(lis):
@@ -112,9 +131,25 @@ def hard_choice(m_cells: list, player: bool) -> str:
 
 
 def hard_recursion(new_board: list, player: str, my_player: str):
+    """ Minimax function to find the best move on the board
+
+        This function uses an AI method called minimax. Basically it consists
+        on verifying all possible moves on the board, for the AI and the player,
+        and sees what is the best play to make on all the possible plays. For
+        this, the function uses recursion to pass in between all possible moves.
+
+    :param new_board: Is the board with a new move, testing if is a good move.
+    :param player: Is the next player to make the play.
+    :param my_player: Is the player who called the game.
+    :return: It returns an int when it reached the end. And return an list
+    when the function has finished.
+    """
+
+    # Verify if it is an end game or a draw.
     state = next_play(new_board, is_hard=1)
     points = []
 
+    # Returns the value calculated by next_play().
     if state == gv.DRAW:
         return 0
     elif state == gv.END:
@@ -123,6 +158,7 @@ def hard_recursion(new_board: list, player: str, my_player: str):
         else:
             return -10
 
+    # This runs for all available moves and calls the recursion again.
     for i, lis in enumerate(new_board):
         for j, char in enumerate(lis):
             if char == "_":
@@ -145,70 +181,59 @@ def next_play(m_cells: list, is_hard=0) -> bool:
     or lost.
 
     :param m_cells: The actual board, with all actual moves.
-    :param row: Is the row position for the inserted value.
-    :param column: Is the column position for the inserted value.
-    :param next_player: Is the return of the who_is_next(...) function.
+    :param is_hard:
     :return: True if the game has ended, and False if the game is still
     happening.
     """
 
     # Setting the new position on the board.
-    diag_sec, diag_prin = 0, 0
+    draw = False
+    ver_set = set()
+    principal_set = set()
+    secondary_set = set()
 
-    for element in range(2, -1, -1):
-        actual = m_cells[element][2 - element]
-        actual_diag = m_cells[1][1] if m_cells[1][1] != "_" else "@"  # Symbolic value, just to differ.
-        hor, ver = 0, 0
+    for i, lis in enumerate(m_cells):
+        hor_set = set(lis)
+        secondary_set.add(lis[i])
+        principal_set.add(lis[2 - i])
 
-        for numb in range(0, 3):
-            if actual == '_':  # Verify if has an empty space on the line, automatically ignoring this line.
-                break
-            if actual == m_cells[element][numb]:
-                hor += 1
-            if actual == m_cells[numb][2 - element]:
-                ver += 1
-
-        # Checking the two diagonals
-        if actual_diag == m_cells[element][element]:
-            diag_sec += 1
-        if actual_diag == m_cells[element][2 - element]:
-            diag_prin += 1
-
-        actual = actual if diag_prin != 3 != diag_sec else actual_diag  # Printing the right character.
-        if hor == 3 or ver == 3 or diag_prin == 3 or diag_sec == 3:
+        if len(hor_set) == 1 and list(hor_set)[0] != "_":
             if not is_hard:
-                print(f"{actual} wins\n")
+                print(f"{list(hor_set)[0]} wins\n")
 
             return gv.END
 
-        # If has no empty spaces on the board, the game is over.
-        elif len([True for lis in m_cells for char in lis if char == '_']) == 0 and element == 0:
-            if not is_hard:
-                print("Draw\n")
+        for j, elem in enumerate(lis):
+            if not draw:
+                if elem == "_":
+                   draw = True
+            ver_set.add(m_cells[j][i])
 
-            return gv.DRAW
+        if len(ver_set) == 1 and list(ver_set)[0] != "_":
+            if not is_hard:
+                print(f"{list(ver_set)[0]} wins\n")
+
+            return gv.END
+
+        hor_set.clear()
+        ver_set.clear()
+
+    if not draw:
+        if not is_hard:
+            print("Draw\n")
+
+        return gv.DRAW
+
+    if len(principal_set) == 1 and list(principal_set)[0] != "_":
+        if not is_hard:
+            print(f"{list(principal_set)[0]} wins\n")
+
+        return gv.END
+
+    if len(secondary_set) == 1 and list(secondary_set)[0] != "_":
+        if not is_hard:
+            print(f"{list(principal_set)[0]} wins\n")
+
+        return gv.END
 
     return gv.KEEP
-
-
-def print_board(m_cells: list) -> None:
-    """ Print the game board
-
-    This function is used to print the board.
-
-    :param m_cells: The actual board, with all actual moves
-    :return: None
-    """
-
-    print("---------")
-
-    for element in range(0, 3):
-        print("|", end="")
-        for numb in range(0, 3):
-            if m_cells[element][numb] == "_":
-                print("  ", end="")
-            else:
-                print(" " + m_cells[element][numb], end="")
-        print(" |")
-
-    print("---------")
