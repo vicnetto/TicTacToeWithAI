@@ -2,7 +2,7 @@
 
 TicTacToe is a classic game, very known by almost every novice programmer (and the rest of the word, of course). Different from the others, this game uses an algorithm called: "Minimax". In the hardest mode, the AI basically runs in between every possible moves, looking only for a win or a draw. 
 
-**BUT, HOW MINIMAX WORK?** [Here](https://www.freecodecamp.org/news/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37/) you can find a little bit about minimax in TicTacToe.
+**BUT, HOW DOES MINIMAX WORK?** [Here](https://www.freecodecamp.org/news/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37/) you can find a little bit about minimax in TicTacToe.
 
 ## Clone and Run
 
@@ -12,7 +12,7 @@ To build it's very easy, you just need to take this steps:
     $ git clone https://github.com/vicnetto/TicTacToeWithAI
     $ cd TicTacToeWithAI
 ```
-2) Them just run the Python file:
+2) Then just run the Python file:
 ```
     $ python main.py
 ```
@@ -38,7 +38,7 @@ Example: So to start an game user against hard AI, you should insert:
 Input Command > start user hard  # If you want to be the "O" player, insert: start hard user
 ---------  # -------------------
 |       |  # | 1 3 | 2 3 | 3 3 |
-|       |  # | 1 2 | 2 2 | 3 2 | < Numbers of the positions!
+|       |  # | 1 2 | 2 2 | 3 2 | < Positions numbers!
 |       |  # | 1 1 | 2 1 | 3 1 |
 ---------  # -------------------
 Enter the coordinates: > 1 1
